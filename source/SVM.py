@@ -40,6 +40,21 @@ def plot_decision_boundary(svm, X_test, y_test):
     zz = zz.reshape(xx.shape)
     plt.contourf(xx, yy, zz, cmap=plt.cm.coolwarm, alpha=0.8)
     plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test, s=200)
-    plt.show()
 
 plot_decision_boundary(svm, X_test, y_test)
+
+
+kernels = [cv2.ml.SVM_LINEAR, cv2.ml.SVM_INTER, cv2.ml.SVM_SIGMOID, cv2.ml.SVM_RBF]
+
+plt.figure(figsize=(14, 8))
+for idx, kernel in enumerate(kernels):
+    svm = cv2.ml.SVM_create()
+    svm.setKernel(kernel)
+    svm.train(X_train, cv2.ml.ROW_SAMPLE, y_train)
+    _, y_pred = svm.predict(X_test)
+    
+    plt.subplot(2, 2, idx + 1)
+    plot_decision_boundary(svm, X_test, y_test)
+    plt.title('accuracy = %.2f' % metrics.accuracy_score(y_test, y_pred))
+
+plt.show()
